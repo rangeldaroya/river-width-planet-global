@@ -1,0 +1,5 @@
+slurm*
+tiled_*
+models/__pycache__/*
+utils_dir/__pycache__/*
+dataset/__pycache__/*
