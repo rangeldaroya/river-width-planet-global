@@ -1,5 +1,5 @@
 #!/bin/bash 
-#SBATCH -o slurm_tile_planet/tile-planet.%j-%a.out 
+#SBATCH -o slurm_tile_planet-err2/tile-planet.%j-%a.out 
 #SBATCH --mail-type=ALL 
 #SBATCH --partition=cpu
 #SBATCH --nodes=1 
@@ -7,7 +7,8 @@
 #SBATCH --mem=16G 
 #SBATCH --time=01:00:00 
 #SBATCH --job-name=tile-planet
-#SBATCH --array=1-123
+# #SBATCH --array=1-121
+#SBATCH --array=8,14,21,33,39,59,60,75,79,84
 
 num=$((SLURM_ARRAY_TASK_ID))
 

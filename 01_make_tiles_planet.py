@@ -87,7 +87,10 @@ if __name__=="__main__":
 
     all_tiles_record = []   # reach_id, planet_id, sentinel_fp, tile_fp, tile_width, tile_height, is_mid_node, mid_lat, mid_lon, start_row_idx, end_row_idx, start_col_idx, end_col_idx
     for idx in tqdm(range(start_idx, end_idx)):
-        row = ref_df.iloc[idx]
+        try:
+            row = ref_df.iloc[idx]
+        except:
+            continue
 
         folder_path = "--".join(row["planet_dir"].split("/")[-4:])
         folder_path = folder_path.replace(".tif","")    # path for saving 500x500 tiles for segmentation
@@ -99,7 +102,11 @@ if __name__=="__main__":
         
         planet_fp = row["planet_dir"]
         reach_id = int(row["reach_id"])
-        planet_data = rasterio.open(planet_fp).read()
+        try:
+            planet_data = rasterio.open(planet_fp).read()
+        except Exception as e:
+            logger.error(f"{e}: {planet_fp}")
+            continue
 
         # mid_row, mid_col = get_mid_ref_idxs(sentinel_img_dataset, nodes_df, reach_id, intersecting_sword_gpd)
         tiles_index_pairs = get_tile_idxs(planet_data, tile_size=TILE_SIZE)
@@ -132,3 +139,4 @@ if __name__=="__main__":
         "start_col_idx", "end_col_idx",
     ])
     df.to_csv(os.path.join(args.out_dir, f"{start_idx:04d}_{end_idx:04d}_tiles_data.csv"), index=False)
+    logger.debug(f"Saved results to {start_idx:04d}_{end_idx:04d}_tiles_data.csv")
